@@ -1,0 +1,4 @@
+{
+  "name": "create-snapshots",
+  "s3_bucket": "mybucket"
+}
