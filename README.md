@@ -2,35 +2,31 @@
 
 create-snapshots is an AWS Lambda function for use with Lambder.
 
-REQUIRES:
+## REQUIRES:
 * python-lambder
 
-## Getting Started
+This lambda function creates an EBS snapshot from each EBS volume
+tagged with Key: 'LambderBackup'. The function will retain at most 3 snapshots
+and delete the oldest snapshot to stay under this threshold.
 
-1) Test the sample lambda function
+## Installation
 
-    python lambda/create-snapshots/create-snapshots.py
+1. Clone this repo
+2. `cp example_lambder.json  lambder.json`
+3. Edit lambder.json to set your S3  bucket
+4. `lambder function deploy`
 
-2) Deploy the sample Lambda function to AWS
+## Usage
 
-    lambder function deploy
+Schedule the function with a new event. Rember that the cron expression is
+based on UTC.
 
-3) Invoke the sample Lambda function in AWS
+    lambder events add \
+      --name CreateSnapshots \
+      --function-name Lambder-create-snapshots \
+      --cron 'cron(0 6 ? * * *)'
 
-    lambder function invoke --input input/ping.json
+## TODO
 
-4) Add useful code to lambda/create-snapshots/create-snapshots.py
-
-5) Add any permissions you need to access other AWS resources to iam/policy.json
-
-6) Update your lambda and permissions policy in one go
-
-    lambder function deploy
-
-## Using virtualenvwrapper
-
-Your Lambdas should be as small as possible to reduce spinup time. If you need
-to include extra python modules, use virtualenvwrapper.
-The deploy script will look for a site-packages directory in
-$WORKON_HOME/lambder-create-snapshots and bundle those packages into the zip
-that it uploads to AWS Lambda.
+* Parameterize the tag in the input event object
+* Parameterize number of old snapshots to retain
