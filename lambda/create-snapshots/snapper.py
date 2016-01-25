@@ -101,4 +101,4 @@ class Snapper:
       snapshot = self.create_snapshot(volume.id, description)
 
       # add backup source tag to snapshot
-      snapshot.create_tags(Tags=[{'Key': 'LambderBackup', 'Value': source}])
+      snapshot.create_tags(Tags=[{'Key': self.TAG_NAME, 'Value': source}])
