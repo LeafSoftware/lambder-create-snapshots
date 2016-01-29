@@ -1,4 +1,7 @@
 {
   "name": "create-snapshots",
-  "s3_bucket": "mybucket"
+  "s3_bucket": "mybucket",
+  "timeout": 59,
+  "memory": 128,
+  "description": ""
 }
