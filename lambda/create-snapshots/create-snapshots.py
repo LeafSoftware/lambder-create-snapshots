@@ -14,6 +14,7 @@ def handler(event={}, context={}):
     logger.info('pong')
     return {'message': 'pong'}
 
+  logger.debug('starting run')
   snapper.run()
 
 # If being called locally, just call handler
