@@ -5,7 +5,8 @@ from datetime import datetime
 
 class Snapper:
 
-  TAG_NAME = "LambderBackup"
+  BACKUP_TAG = "LambderBackup"
+  REPLICATE_TAG = "LambderReplicate"
 
   def __init__(self):
     self.ec2 = boto3.resource('ec2')
@@ -13,7 +14,7 @@ class Snapper:
     self.logger = logging.getLogger()
 
   def get_volumes_to_backup(self):
-    filters = [{'Name':'tag-key', 'Values': [self.TAG_NAME]}]
+    filters = [{'Name':'tag-key', 'Values': [self.BACKUP_TAG]}]
     volumes = self.ec2.volumes.filter(Filters=filters)
     return volumes
 
@@ -22,9 +23,17 @@ class Snapper:
     time_str = time_str.replace(':', '').replace('+', '')
     return source_name + '-' + time_str
 
+  def is_replicated(self, resource):
+    tags = filter(lambda x: x['Key'] == self.REPLICATE_TAG, resource.tags)
+
+    if len(tags) < 1:
+      return False
+
+    return True
+
   # Takes an snapshot or volume, returns the backup source
   def get_backup_source(self, resource):
-    tags = filter(lambda x: x['Key'] == self.TAG_NAME, resource.tags)
+    tags = filter(lambda x: x['Key'] == self.BACKUP_TAG, resource.tags)
 
     if len(tags) < 1:
       return None
@@ -55,4 +64,7 @@ class Snapper:
       snapshot = self.create_snapshot(volume.id, description)
 
       # add backup source tag to snapshot
-      snapshot.create_tags(Tags=[{'Key': self.TAG_NAME, 'Value': source}])
+      snapshot.create_tags(Tags=[{'Key': self.BACKUP_TAG, 'Value': source}])
+
+      if self.is_replicated(volume):
+        snapshot.create_tags(Tags=[{'Key': self.REPLICATE_TAG, 'Value': ''}])
