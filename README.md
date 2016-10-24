@@ -14,7 +14,8 @@ and delete the oldest snapshot to stay under this threshold.
 1. Clone this repo
 2. `cp example_lambder.json  lambder.json`
 3. Edit lambder.json to set your S3  bucket
-4. `lambder functions deploy`
+4. Edit config.json to set the regions where you want pruning
+5. `lambder functions deploy`
 
 ## Usage
 
