@@ -1,4 +1,4 @@
 .env
 **/*.pyc
-lambder.json
+lambder*.json
 **/config.json
